@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ candidate['name'] }} - Candidate Scoring{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{{ url_for('index') }}">Positions</a> &raquo;
+    <a href="{{ url_for('position_detail', position_id=candidate['position_id']) }}">{{ candidate['position_title'] }}</a> &raquo;
+    {{ candidate['name'] }}
+</div>
+
+<h2>{{ candidate['name'] }}</h2>
+
+<!-- Score Summary -->
+<div class="card">
+    <h3 style="margin-top: 0;">Score Summary</h3>
+    {% if stats['num_scores'] > 0 %}
+    <div class="stats">
+        <div class="stat">
+            <div class="stat-label">Hand Gestures</div>
+            <div class="stat-value">{{ stats['avg_hand_gestures'] }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Stayed Awake</div>
+            <div class="stat-value">{{ stats['avg_stayed_awake'] }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Average</div>
+            <div class="stat-value">{{ stats['avg_total'] }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-label">Reviewers</div>
+            <div class="stat-value">{{ stats['num_scores'] }}</div>
+        </div>
+    </div>
+    {% else %}
+    <p>No scores yet. Be the first to score this candidate.</p>
+    {% endif %}
+</div>
+
+<!-- Your Score -->
+<div class="card">
+    <h3 style="margin-top: 0;">Your Score</h3>
+    <form method="POST">
+        <input type="hidden" name="action" value="score">
+        <div class="score-input">
+            <div>
+                <label for="hand_gestures">Hand Gestures (1-5)</label>
+                <select id="hand_gestures" name="hand_gestures" required>
+                    <option value="">Select...</option>
+                    {% for i in range(1, 6) %}
+                    <option value="{{ i }}" {% if my_score and my_score['hand_gestures'] == i %}selected{% endif %}>
+                        {{ i }} - {% if i == 1 %}No gestures{% elif i == 2 %}Minimal{% elif i == 3 %}Adequate{% elif i == 4 %}Expressive{% else %}TED-talk caliber{% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="stayed_awake">Stayed Awake (1-5)</label>
+                <select id="stayed_awake" name="stayed_awake" required>
+                    <option value="">Select...</option>
+                    {% for i in range(1, 6) %}
+                    <option value="{{ i }}" {% if my_score and my_score['stayed_awake'] == i %}selected{% endif %}>
+                        {{ i }} - {% if i == 1 %}Lost consciousness{% elif i == 2 %}Struggled{% elif i == 3 %}Stayed awake{% elif i == 4 %}Engaged{% else %}Riveted{% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit">{% if my_score %}Update Score{% else %}Submit Score{% endif %}</button>
+    </form>
+</div>
+
+<!-- Student Feedback -->
+<div class="card">
+    <h3 style="margin-top: 0;">Student Feedback Reports</h3>
+    <form method="POST">
+        <input type="hidden" name="action" value="feedback">
+        <label for="student_feedback">Historical feedback from students (optional)</label>
+        <textarea id="student_feedback" name="student_feedback" placeholder="Paste student feedback or evaluations here...">{{ candidate['student_feedback'] or '' }}</textarea>
+        <button type="submit">Save Feedback</button>
+    </form>
+</div>
+{% endblock %}

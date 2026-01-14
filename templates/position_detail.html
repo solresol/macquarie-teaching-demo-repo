@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}{{ position['title'] }} - Candidate Scoring{% endblock %}
+
+{% block content %}
+<div class="breadcrumb">
+    <a href="{{ url_for('index') }}">Positions</a> &raquo; {{ position['title'] }}
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <h2 style="margin: 0;">{{ position['title'] }}</h2>
+    <a href="{{ url_for('new_candidate', position_id=position['id']) }}" class="btn">Add Candidate</a>
+</div>
+
+{% if candidates %}
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Candidate</th>
+                <th>Hand Gestures</th>
+                <th>Stayed Awake</th>
+                <th>Average</th>
+                <th>Scores</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in candidates %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td><a href="{{ url_for('candidate_detail', candidate_id=c['candidate_id']) }}">{{ c['candidate_name'] }}</a></td>
+                <td>{{ c['avg_hand_gestures'] if c['avg_hand_gestures'] else '-' }}</td>
+                <td>{{ c['avg_stayed_awake'] if c['avg_stayed_awake'] else '-' }}</td>
+                <td><strong>{{ c['avg_total'] if c['avg_total'] else '-' }}</strong></td>
+                <td>{{ c['num_scores'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+    <p>No candidates yet. <a href="{{ url_for('new_candidate', position_id=position['id']) }}">Add one</a> to get started.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,3 @@
+- Program in C or C++
+- Use plaintext files for the database
+- This is a web-based application. Listen on port 8028
