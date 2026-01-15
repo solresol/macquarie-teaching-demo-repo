@@ -19,4 +19,3 @@ Makefile.cmake
 
 # Environment
 .env
-*.png

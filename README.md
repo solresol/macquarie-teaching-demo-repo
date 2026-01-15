@@ -13,6 +13,10 @@ Then open http://localhost:5000
 
 The database is created automatically on first run.
 
+## Screenshot
+
+![Screenshot](Screenshot.png)
+
 ## Prompts Used to Create This Application
 
 The following prompts were given to Claude Code to build this application:
