@@ -74,6 +74,56 @@ public:
             throw std::runtime_error("Failed to open database");
         }
         sqlite3_exec(db, "PRAGMA foreign_keys = ON", nullptr, nullptr, nullptr);
+        init_schema();
+    }
+
+    void init_schema() {
+        const char* schema = R"(
+            CREATE TABLE IF NOT EXISTS users (
+                id TEXT PRIMARY KEY,
+                email TEXT NOT NULL UNIQUE,
+                display_name TEXT NOT NULL,
+                created_at TEXT NOT NULL DEFAULT (datetime('now'))
+            );
+
+            CREATE TABLE IF NOT EXISTS positions (
+                id TEXT PRIMARY KEY,
+                title TEXT NOT NULL,
+                created_by TEXT NOT NULL REFERENCES users(id),
+                created_at TEXT NOT NULL DEFAULT (datetime('now'))
+            );
+
+            CREATE TABLE IF NOT EXISTS candidates (
+                id TEXT PRIMARY KEY,
+                position_id TEXT NOT NULL REFERENCES positions(id) ON DELETE CASCADE,
+                name TEXT NOT NULL,
+                student_feedback TEXT,
+                created_at TEXT NOT NULL DEFAULT (datetime('now'))
+            );
+
+            CREATE TABLE IF NOT EXISTS scores (
+                id TEXT PRIMARY KEY,
+                candidate_id TEXT NOT NULL REFERENCES candidates(id) ON DELETE CASCADE,
+                interviewer_id TEXT NOT NULL REFERENCES users(id),
+                hand_gestures INTEGER NOT NULL CHECK (hand_gestures BETWEEN 1 AND 5),
+                stayed_awake INTEGER NOT NULL CHECK (stayed_awake BETWEEN 1 AND 5),
+                created_at TEXT NOT NULL DEFAULT (datetime('now')),
+                updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+                UNIQUE (candidate_id, interviewer_id)
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_candidates_position ON candidates(position_id);
+            CREATE INDEX IF NOT EXISTS idx_scores_candidate ON scores(candidate_id);
+            CREATE INDEX IF NOT EXISTS idx_scores_interviewer ON scores(interviewer_id);
+            CREATE INDEX IF NOT EXISTS idx_positions_created_by ON positions(created_by);
+        )";
+
+        char* err_msg = nullptr;
+        if (sqlite3_exec(db, schema, nullptr, nullptr, &err_msg) != SQLITE_OK) {
+            std::string error = err_msg ? err_msg : "Unknown error";
+            sqlite3_free(err_msg);
+            throw std::runtime_error("Failed to initialize schema: " + error);
+        }
     }
 
     ~Database() {
