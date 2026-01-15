@@ -2,6 +2,14 @@
 
 A web application for scoring academic interview candidates, built in C++.
 
+I (Greg Baker) created this during a 20-minute teaching demonstration for
+a position at Macquarie University in 2026. (This paragraph is the only
+one that was written by a human being.)
+
+## Screenshot
+
+![Screenshot](Screenshot.png)
+
 ## Building and Running
 
 ```bash
@@ -13,9 +21,6 @@ Then open http://localhost:5000
 
 The database is created automatically on first run.
 
-## Screenshot
-
-![Screenshot](Screenshot.png)
 
 ## Prompts Used to Create This Application
 
@@ -30,20 +35,8 @@ The following prompts were given to Claude Code to build this application:
 ### Prompt 3: Implementation
 > Implement the application that we have specified.
 
-### Prompt 4: Package Manager
-> Use uv instead
-
-### Prompt 5: Language Change
+### Prompt 4: Language Change
 > You were supposed to be writing in C/C++. (Feel free to apt install and libraries that you would need in order to do this).
 
-### Prompt 6: Compilation
-> Can you compile it
-
-### Prompt 7: Git Remote
-> Connect this to the repo git@github.com:solresol/macquarie-teaching-demo-repo
-
-### Prompt 8: Database Handling
-> Is candidate_scoring.db committed to git? (It shouldn't be.) If someone runs candidate_scoring, will it automatically create candidate_scoring.db?
-
-### Prompt 9: Documentation
+### Prompt 5: Documentation
 > Write a README.md file that contains the prompts that you have been given.
